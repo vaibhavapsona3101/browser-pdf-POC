@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOXML to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.11/pako.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <h1>OOXML to PDF Converter</h1>
+    <textarea id="inputData" rows="10" cols="80" placeholder="Paste your compressed OOXML data here..."></textarea><br>
+    <button id="convertButton">Convert to PDF</button>
+    
+    <script>
+        document.getElementById('convertButton').onclick = function() {
+            const inputData = document.getElementById('inputData').value;
+
+            try {
+                // Decompress the OOXML data
+                const uint8Array = new Uint8Array(inputData.length);
+                for (let i = 0; i < inputData.length; i++) {
+                    uint8Array[i] = inputData.charCodeAt(i);
+                }
+                
+                const decompressed = pako.inflate(uint8Array);
+                const xmlString = new TextDecoder().decode(decompressed);
+
+                // Process the XML to extract text content
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+                const textContent = xmlDoc.getElementsByTagName("w:t");
+                let pdfContent = "";
+                for (let i = 0; i < textContent.length; i++) {
+                    pdfContent += textContent[i].textContent + "\n"; // Concatenate text
+                }
+
+                // Create PDF from extracted content
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+                pdf.text(pdfContent, 10, 10);
+                pdf.save('output.pdf');
+                
+            } catch (error) {
+                console.error("Error during conversion:", error);
+                alert("Failed to convert to PDF. Check console for details.");
+            }
+        };
+    </script>
+</body>
+</html>

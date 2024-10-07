@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert DOCX to Uint8Array</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+</head>
+<body>
+    <input type="file" id="docxInput" accept=".docx" />
+    <button id="convertButton">Convert DOCX to pdf</button>
+
+    <script type="module">
+        const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
+
+        document.getElementById('convertButton').addEventListener('click', () => {
+            const fileInput = document.getElementById('docxInput');
+            const file = fileInput.files[0];
+            let existingPdfBytes;
+            
+
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    // Get the ArrayBuffer
+                    const arrayBuffer = event.target.result;
+
+                    // Convert to Uint8Array
+                    const uint8Array = new Uint8Array(arrayBuffer);
+
+                    console.log('ArrayBuffer:', arrayBuffer);
+                    console.log('Uint8Array:', uint8Array);
+                     existingPdfBytes = uint8Array;
+                     helper();
+
+                };
+
+                // Read the file as an ArrayBuffer
+                reader.readAsArrayBuffer(file);
+
+              async function helper (){
+                const pdfDoc = await PDFDocument.load(existingPdfBytes)
+                const pdfBytes = await pdfDoc.save()
+                const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'generated.pdf'; // Set the desired file name
+
+                    // Programmatically click the link to trigger the download
+                    link.click();
+
+                    // Clean up by revoking the object URL
+                    URL.revokeObjectURL(link.href);
+
+
+              }
+            } else {
+                console.log('No file selected.');
+            }
+        });
+    </script>
+</body>
+</html>

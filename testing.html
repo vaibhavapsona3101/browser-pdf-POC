@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML to PDF Converter</title>
+    <script type="module">
+        import { PDFDocument, rgb } from 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm';
+
+        const convertToPDF = async () => {
+            const xmlInput = document.getElementById('xmlInput').value.trim();
+            if (!xmlInput) {
+                alert('Please enter the XML data.');
+                return;
+            }
+
+            const pdfDoc = await PDFDocument.create();
+            const defaultPageSize = [595.28, 841.89]; // A4 size in points (width x height)
+            const margin = 40; // Set default margin
+            let yPosition = defaultPageSize[1] - margin;
+
+            const page = pdfDoc.addPage(defaultPageSize); // Add a new page
+
+            // Parse the XML content
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlInput, "application/xml");
+            const paragraphs = xmlDoc.getElementsByTagName("w:p"); // Get paragraphs
+
+            for (let i = 0; i < paragraphs.length; i++) {
+                const texts = paragraphs[i].getElementsByTagName("w:t"); // Get text nodes within each paragraph
+                let paragraphText = '';
+                let fontSize = 12; // Default font size
+                let color = rgb(0, 0, 0); // Default color
+                let isBold = false;
+                let isItalic = false;
+
+                // Check for paragraph formatting
+                const runs = paragraphs[i].getElementsByTagName("w:r"); // Get runs for each paragraph
+                for (let run of runs) {
+                    const textNode = run.getElementsByTagName("w:t")[0];
+                    if (textNode) {
+                        paragraphText += textNode.textContent; // Concatenate text
+                    }
+
+                    // Check for bold and italic formatting
+                    if (run.getElementsByTagName("w:b").length > 0) {
+                        isBold = true;
+                    }
+                    if (run.getElementsByTagName("w:i").length > 0) {
+                        isItalic = true;
+                    }
+
+                    // Extract font size
+                    const rPr = run.getElementsByTagName("w:rPr")[0];
+                    if (rPr) {
+                        const sizeNode = rPr.getElementsByTagName("w:sz")[0];
+                        if (sizeNode) {
+                            fontSize = parseInt(sizeNode.getAttribute("w:val")) / 2; // Convert half-points to points
+                        }
+
+                        // Extract font color
+                        const colorNode = rPr.getElementsByTagName("w:color")[0];
+                        if (colorNode) {
+                            const rgbColor = colorNode.getAttribute("w:val");
+                            color = rgb(
+                                parseInt(rgbColor.substr(0, 2), 16) / 255,
+                                parseInt(rgbColor.substr(2, 2), 16) / 255,
+                                parseInt(rgbColor.substr(4, 2), 16) / 255
+                            );
+                        }
+
+                        // Extract font family (optional)
+                        const fontNode = rPr.getElementsByTagName("w:rFonts")[0];
+                        if (fontNode) {
+                            const fontFamily = fontNode.getAttribute("w:ascii") || fontNode.getAttribute("w:hAnsi") || 'Helvetica';
+                            // Here you would need to map fontFamily to available PDF fonts if necessary.
+                        }
+                    }
+                }
+
+                // Add text to PDF with formatting
+                page.drawText(paragraphText, {
+                    x: margin,
+                    y: yPosition,
+                    size: fontSize,
+                    color: color,
+                    ...(isBold ? { font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold) } : {}),
+                    ...(isItalic ? { font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaOblique) } : {}),
+                });
+
+                yPosition -= fontSize + 5; // Move down for the next line
+
+                // Check for page overflow
+                if (yPosition < margin) {
+                    yPosition = defaultPageSize[1] - margin; // Reset yPosition for new page
+                    pdfDoc.addPage(defaultPageSize); // Add new page
+                }
+            }
+
+            // Save the PDF
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'converted.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const convertButton = document.getElementById('convertButton');
+            convertButton.addEventListener('click', convertToPDF);
+        });
+    </script>
+</head>
+<body>
+    <h1>XML to PDF Converter</h1>
+    <textarea id="xmlInput" rows="10" cols="50" placeholder="Paste your XML data here..."></textarea>
+    <br>
+    <button id="convertButton">Convert XML to PDF</button>
+</body>
+</html>

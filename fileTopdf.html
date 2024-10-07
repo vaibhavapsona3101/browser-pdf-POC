@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <h1>DOCX to PDF Converter</h1>
+    <input type="file" id="fileInput" accept=".docx"/>
+    <button onclick="convertToPDF()">Convert to PDF</button>
+    <div id="output" style="display: none;"></div>
+
+    <script>
+        async function convertToPDF() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Please select a DOCX file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const arrayBuffer = event.target.result;
+
+                try {
+                    const { value: html } = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                    document.getElementById('output').innerHTML = html;
+
+                    // Wait for images to load before capturing
+                    await waitForImagesToLoad();
+
+                    const canvas = await html2canvas(document.getElementById('output'), { scale: 2 });
+                    const imgData = canvas.toDataURL('image/png');
+
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF();
+                    pdf.addImage(imgData, 'PNG', 0, 0);
+                    pdf.save('converted.pdf');
+                } catch (error) {
+                    console.error('Error converting DOCX:', error);
+                    alert('Error converting DOCX. Check the console for details.');
+                }
+            };
+            reader.readAsArrayBuffer(fileInput.files[0]);
+        }
+
+        function waitForImagesToLoad() {
+            const images = document.getElementById('output').getElementsByTagName('img');
+            const promises = Array.from(images).map(img => {
+                return new Promise((resolve) => {
+                    img.onload = () => {
+                        // Check if the image is complete and valid
+                        if (img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0) {
+                            resolve();
+                        } else {
+                            console.warn('Image failed to load properly:', img.src);
+                            resolve(); // Resolve even on error to prevent blocking
+                        }
+                    };
+                    img.onerror = () => {
+                        console.warn('Image error:', img.src);
+                        resolve(); // Resolve to prevent blocking
+                    };
+                });
+            });
+            return Promise.all(promises);
+        }
+    </script>
+</body>
+</html>

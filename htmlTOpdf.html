@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+
+    <h1>XML to PDF Converter</h1>
+
+    <textarea id="xmlInput" rows="10" cols="50" placeholder="Paste your XML content here..."></textarea>
+    <br>
+    <button onclick="convertToPDF()">Convert XML to PDF</button>
+
+    <script>
+        async function convertToPDF() {
+            const xmlInput = document.getElementById('xmlInput').value.trim();
+            if (!xmlInput) {
+                alert('Please enter the XML content.');
+                return;
+            }
+
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlInput, "application/xml");
+
+            const pdfDoc = await PDFLib.PDFDocument.create();
+
+            // Default page settings (if <w:pgSz> is missing)
+            let pageWidth = 595.28;  // A4 width in points (twips: 11906 / 20)
+            let pageHeight = 841.89; // A4 height in points (twips: 16838 / 20)
+            let marginTop = 72;      // Default margin in points (twips: 1440 / 20)
+            let marginRight = 72;
+            let marginBottom = 72;
+            let marginLeft = 72;
+
+            // Extract page size and margins from the XML (inside <w:sectPr>)
+            const sectPr = xmlDoc.getElementsByTagName("w:sectPr")[0];
+            if (sectPr) {
+                const pageSize = sectPr.getElementsByTagName("w:pgSz")[0];
+                if (pageSize) {
+                    const widthTwips = pageSize.getAttribute("w:w");
+                    const heightTwips = pageSize.getAttribute("w:h");
+                    pageWidth = widthTwips ? parseInt(widthTwips) / 20 : pageWidth;  // Convert twips to points
+                    pageHeight = heightTwips ? parseInt(heightTwips) / 20 : pageHeight;
+                }
+
+                const pageMargins = sectPr.getElementsByTagName("w:pgMar")[0];
+                if (pageMargins) {
+                    const topTwips = pageMargins.getAttribute("w:top");
+                    const rightTwips = pageMargins.getAttribute("w:right");
+                    const bottomTwips = pageMargins.getAttribute("w:bottom");
+                    const leftTwips = pageMargins.getAttribute("w:left");
+                    marginTop = topTwips ? parseInt(topTwips) / 20 : marginTop;
+                    marginRight = rightTwips ? parseInt(rightTwips) / 20 : marginRight;
+                    marginBottom = bottomTwips ? parseInt(bottomTwips) / 20 : marginBottom;
+                    marginLeft = leftTwips ? parseInt(leftTwips) / 20 : marginLeft;
+                }
+            }
+
+            // Create the first page with dynamic size and margins
+            let page = pdfDoc.addPage([pageWidth, pageHeight]);
+            let { width, height } = page.getSize();
+            let yPos = height - marginTop; // Starting y position with margin
+
+            const fontSizeDefault = 12; // Default font size
+            const textNodes = xmlDoc.getElementsByTagName("w:t");
+
+            for (let i = 0; i < textNodes.length; i++) {
+                const textContent = textNodes[i].textContent || '';
+                const fontNode = textNodes[i].parentNode.getElementsByTagName("w:rPr")[0];
+
+                // Extract style details from the XML node (bold, italic, font size, etc.)
+                let isBold = fontNode && fontNode.getElementsByTagName("w:b").length > 0;
+                let isItalic = fontNode && fontNode.getElementsByTagName("w:i").length > 0;
+                let fontSize = fontNode && fontNode.getElementsByTagName("w:sz").length > 0
+                    ? parseInt(fontNode.getElementsByTagName("w:sz")[0].getAttribute("w:val")) / 2 // The value in <w:sz> is half the point size
+                    : fontSizeDefault;
+
+                // Handle bold and italic styles
+                let fontStyle = 'normal';
+                if (isBold && isItalic) {
+                    fontStyle = 'bolditalic';
+                } else if (isBold) {
+                    fontStyle = 'bold';
+                } else if (isItalic) {
+                    fontStyle = 'italic';
+                }
+
+                // Add text to the PDF
+                page.drawText(textContent, {
+                    x: marginLeft,
+                    y: yPos,
+                    size: fontSize,
+                    font: await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica),
+                    color: PDFLib.rgb(0, 0, 0),
+                });
+
+                // Decrease y position and handle page breaks
+                yPos -= fontSize + 5;
+                if (yPos < marginBottom || xmlDoc.getElementsByTagName("w:br")[i]?.getAttribute("w:type") === "page") {
+                    page = pdfDoc.addPage([pageWidth, pageHeight]); // Add a new page with dynamic size
+                    yPos = height - marginTop; // Reset y position for new page
+                }
+            }
+
+            // Save the PDF
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            saveAs(blob, 'converted.pdf');
+        }
+    </script>
+
+</body>
+</html>

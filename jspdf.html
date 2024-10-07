@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to PDF Editor</title>
+    
+    <!-- Include jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Include dompurify to sanitize HTML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.8/purify.min.js"></script>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        #editor {
+            width: 45%;
+        }
+        #preview {
+            width: 45%;
+            height: 100vh;
+        }
+        textarea {
+            width: 100%;
+            height: 90vh;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        iframe {
+            width: 100%;
+            height: 90vh;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML Editor Side -->
+    <div id="editor">
+        <h2>HTML Input</h2>
+        <textarea id="html-input">
+            <h1>Hello PDF</h1>
+            <p>This is a sample HTML input that will be converted into a PDF.</p>
+            <p><b>Bold text</b>, <i>italic text</i>, and <u>underlined text</u>.</p>
+        </textarea>
+        <button id="update-preview">Update PDF Preview</button>
+        <button id="download-pdf">Download PDF</button>
+    </div>
+
+    <!-- PDF Preview Side -->
+    <div id="preview">
+        <h2>PDF Preview</h2>
+        <iframe id="pdf-frame"></iframe>
+    </div>
+
+    <script>
+        let pdf;  // Declare globally to access the same PDF instance
+
+        document.getElementById('update-preview').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            pdf = new jsPDF();  // Create a new jsPDF instance each time
+            const htmlContent = document.getElementById("html-input").value;  // Get HTML content from textarea
+
+            pdf.html(htmlContent, {
+                callback: function (pdf) {
+                    // Get PDF as Blob and display in iframe
+                    const pdfBlob = pdf.output('blob');
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    document.getElementById('pdf-frame').src = pdfUrl;  // Display in iframe
+                },
+                x: 10,  // Adjust x/y positioning if needed
+                y: 10,
+                width: 180  // Set PDF width (optional)
+            });
+        });
+
+        // Download PDF functionality
+        document.getElementById('download-pdf').addEventListener('click', function () {
+            if (pdf) {
+                pdf.save("generated.pdf");  // Save the currently generated PDF
+            } else {
+                alert("Please generate the PDF preview first!");
+            }
+        });
+    </script>
+</body>
+</html>
