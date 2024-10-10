@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to HTML and PDF Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            /* Light background for better visibility */
+        }
+
+        #container {
+            max-width: 100%;
+            overflow-x: hidden;
+            word-wrap: break-word;
+            /* Ensure long words break correctly */
+        }
+
+        @media print {
+    body {
+        -webkit-print-color-adjust: exact;
+    }
+    div, table, img {
+        page-break-inside: avoid;
+    }
+}
+
+#container {
+    max-width: 100%;
+    overflow-x: hidden;
+    /* word-wrap: break-word; */
+    box-sizing: border-box;
+    margin: 0 auto; /* Center the content */
+}
+
+table, img {
+    max-width: 100%;
+    /* word-wrap: break-word; */
+}
+
+
+    </style>
+</head>
+
+<body>
+
+    <h1>DOCX to HTML and PDF Converter with page break</h1>
+    <input id="document" type="file" onchange="onGetFile(this)" accept=".docx" />
+    <button id="pdfButton" onclick="generatePDF()" style="margin-top: 20px; display: none;">Generate PDF</button>
+    <div id="container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+    <script>
+        function onGetFile(el) {
+            var file = el.files[0];
+            var container = document.getElementById("container");
+            container.innerHTML = ""; // Clear previous content
+
+            var options = { inWrapper: false, ignoreWidth: true, ignoreHeight: true }; // Options for docx-preview
+
+            docx.renderAsync(file, container, null, options)
+                .then(() => {
+                    console.log("docx: finished");
+                    // Get the HTML content from the container
+                    var htmlContent = container.innerHTML;
+                    console.log("Generated HTML:", htmlContent); // Print the generated HTML to console
+
+                    // Show the PDF button
+                    document.getElementById("pdfButton").style.display = "block";
+                })
+                .catch(error => console.error("Error rendering docx:", error));
+        }
+
+        function generatePDF() {
+            const container = document.getElementById("container");
+            // // Options for html2pdf, setting the page break mode
+            // const opt = {
+            //     margin: [0, 0], //top, left, buttom, right,
+            //     filename: 'document.pdf',
+            //     image: { type: 'jpeg', quality: 0.98 },
+            //     enableLinks : true,
+            //     html2canvas: { scale: 2, useCORS: true },
+            //     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+            //     // pagebreak: { mode: 'avoid-all' } // Automatically handle page breaks
+            //     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+
+            // };
+
+            // // Convert HTML to PDF with page breaks
+            // html2pdf().set(opt).from(container).save();
+
+
+
+
+
+
+            var opt = {
+                margin: [0, 10, 30, 10], // top, left, bottom, right
+                filename: 'my_file.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { dpi: 192, scale: 1.5 },
+                pagebreak: { mode: 'avoid-all' },
+                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+            };
+            var worker = html2pdf();
+
+            console.log(worker);
+            worker.set(opt)
+                .from(container)
+                .toPdf()
+                .get('pdf')
+                .then(function (doc) {
+                    var totalPages = doc.internal.getNumberOfPages();
+                    for (var i = 1; i <= totalPages; i++) {
+                        if (i > 1) {
+                            doc.setPage(i);
+                            //?????
+                        }
+                    }
+
+                }).save();
+
+
+
+        }
+    </script>
+</body>
+
+</html>

@@ -7,7 +7,12 @@
     <title>HTML to PDF Editor</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+   
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+
+   <style>
         body {
             display: flex;
             flex-direction: row;
@@ -43,15 +48,13 @@
 
 <body>
     <div id="editor">
-        <h2>HTML Input ffs</h2>
+        <h2>HTML Input</h2>
         <textarea id="html-input">
-            <h1>Hello PDF : </h1>
-            <p>This is a sample HTML input that will be converted into a PDF.</p>
-            <p><b>Bold text</b>, <i>italic text</i>, and <u>underlined text</u>.</p>
-            <h2>Images</h2>
-            <img src="https://images.unsplash.com/photo-1603587630352-897a5b23c218?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3NzF8MHwxfGFsbHwxfHx8fHx8fHwxNjIwOTQ5MTA4&ixlib=rb-1.2.1&q=80&w=400" alt="Nature Image" style="border: 1px solid #ccc;">
+
+       
+       
         </textarea>
-        <button id="update-preview">Update PDF Preview : )</button>
+        <button id="update-preview">Update PDF Preview :jjdsj </button>
     </div>
 
     <div id="preview">
@@ -59,8 +62,52 @@
         <iframe id="pdf-frame"></iframe>
     </div>
 
+    <input type="file" id="upload" accept=".docx" />
+
+
     <script>
         const { jsPDF } = window.jspdf;
+
+        // document.getElementById('update-preview').addEventListener('click', function () {
+        //     const htmlContent = document.getElementById("html-input").value;
+
+            
+
+        //     // Create a hidden div to render the HTML content
+        //     const hiddenDiv = document.createElement('div');
+        //     hiddenDiv.style.width = '210mm';  // A4 page width
+        //     hiddenDiv.style.padding = '20px';
+        //     hiddenDiv.innerHTML = htmlContent;
+        //     document.body.appendChild(hiddenDiv);
+
+        //     // Use html2canvas to capture the HTML content as an image
+        //     html2canvas(hiddenDiv, { useCORS: true, pagesplit: true  }).then(canvas => {
+        //         const imgData = canvas.toDataURL("image/png");
+        //         console.log("Canvas captured successfully");
+
+        //         // Create a new PDF and add the image
+        //         const pdf = new jsPDF();
+        //         pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);  // Add image to the PDF
+        //         console.log("Image added to PDF");
+
+        //         // Remove the hidden div
+        //         document.body.removeChild(hiddenDiv);
+
+        //         // Get PDF as Blob and display in iframe
+        //         const pdfBlob = pdf.output('blob');
+        //         const pdfUrl = URL.createObjectURL(pdfBlob);
+        //         document.getElementById('pdf-frame').src = pdfUrl;
+        //         console.log("PDF URL created and set in iframe");
+        //     }).catch(err => {
+        //         console.error('Error rendering the PDF:', err);
+        //     });
+        // });
+
+
+
+
+
+        //fixing  for multiple pages
 
         document.getElementById('update-preview').addEventListener('click', function () {
             const htmlContent = document.getElementById("html-input").value;
@@ -75,12 +122,28 @@
             // Use html2canvas to capture the HTML content as an image
             html2canvas(hiddenDiv, { useCORS: true }).then(canvas => {
                 const imgData = canvas.toDataURL("image/png");
-                console.log("Canvas captured successfully");
 
-                // Create a new PDF and add the image
-                const pdf = new jsPDF();
-                pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);  // Add image to the PDF
-                console.log("Image added to PDF");
+                // Create a new PDF
+                const pdf = new jsPDF('p', 'mm', 'a4');
+
+                const imgWidth = 210; // A4 width
+                const pageHeight = 297; // A4 height
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+
+                let position = 0;
+
+                // Add the first image
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                // Add additional pages if content overflows
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight; // Adjust position for the next page
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight; // Decrease height left by the page height
+                }
 
                 // Remove the hidden div
                 document.body.removeChild(hiddenDiv);
@@ -89,65 +152,11 @@
                 const pdfBlob = pdf.output('blob');
                 const pdfUrl = URL.createObjectURL(pdfBlob);
                 document.getElementById('pdf-frame').src = pdfUrl;
-                console.log("PDF URL created and set in iframe");
+                console.log(8884)
             }).catch(err => {
                 console.error('Error rendering the PDF:', err);
             });
         });
-
-
-
-
-
-        //fixing  for multiple pages
-
-        // document.getElementById('update-preview').addEventListener('click', function () {
-        //     const htmlContent = document.getElementById("html-input").value;
-
-        //     // Create a hidden div to render the HTML content
-        //     const hiddenDiv = document.createElement('div');
-        //     hiddenDiv.style.width = '210mm';  // A4 page width
-        //     hiddenDiv.style.padding = '20px';
-        //     hiddenDiv.innerHTML = htmlContent;
-        //     document.body.appendChild(hiddenDiv);
-
-        //     // Use html2canvas to capture the HTML content as an image
-        //     html2canvas(hiddenDiv, { useCORS: true }).then(canvas => {
-        //         const imgData = canvas.toDataURL("image/png");
-
-        //         // Create a new PDF
-        //         const pdf = new jsPDF('p', 'mm', 'a4');
-
-        //         const imgWidth = 210; // A4 width
-        //         const pageHeight = 297; // A4 height
-        //         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        //         let heightLeft = imgHeight;
-
-        //         let position = 0;
-
-        //         // Add the first image
-        //         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        //         heightLeft -= pageHeight;
-
-        //         // Add additional pages if content overflows
-        //         while (heightLeft >= 0) {
-        //             position = heightLeft - imgHeight; // Adjust position for the next page
-        //             pdf.addPage();
-        //             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        //             heightLeft -= pageHeight; // Decrease height left by the page height
-        //         }
-
-        //         // Remove the hidden div
-        //         document.body.removeChild(hiddenDiv);
-
-        //         // Get PDF as Blob and display in iframe
-        //         const pdfBlob = pdf.output('blob');
-        //         const pdfUrl = URL.createObjectURL(pdfBlob);
-        //         document.getElementById('pdf-frame').src = pdfUrl;
-        //     }).catch(err => {
-        //         console.error('Error rendering the PDF:', err);
-        //     });
-        // });
 
 
 
@@ -232,6 +241,54 @@
 
 
 
+
+       
+
+
+
+
+//         document.getElementById('update-preview').addEventListener('click', function () {
+//     const htmlContent = document.getElementById("html-input").value;
+
+//     // Create a hidden div to render the HTML content
+//     const hiddenDiv = document.createElement('div');
+//     hiddenDiv.style.width = '210mm';  // A4 page width
+//     hiddenDiv.style.padding = '20px';
+//     hiddenDiv.innerHTML = htmlContent;
+//     document.body.appendChild(hiddenDiv);
+
+//     const opt = {
+//         useCORS: true,
+//         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+//         margin: 1,
+//         filename: 'myfile.pdf',
+//         image: { type: 'jpeg', quality: 0.98 },
+//         html2canvas: { scale: 2.5 },
+//         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+//     };
+// console.log(76773)
+//     // Generate PDF with html2pdf
+//     html2pdf()
+//         .set(opt)
+//         .from(hiddenDiv)
+//         .output('blob')  // Get the blob to display in iframe
+//         .then(function (pdfBlob) {
+//             // Display PDF in the iframe
+//             const pdfUrl = URL.createObjectURL(pdfBlob);
+//             document.getElementById('pdf-frame').src = pdfUrl;
+//             console.log("PDF URL created and set in iframe");
+
+//             // Trigger file download
+//             html2pdf().set(opt).from(hiddenDiv).save();
+
+//             // Remove hidden div after generating the PDF
+//             document.body.removeChild(hiddenDiv);
+//             console.log("PDF generated and hidden div removed");
+//         })
+//         .catch(err => {
+//             console.error('Error rendering the PDF:', err);
+//         });
+// });
     </script>
 </body>
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to HTML Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9; /* Light background for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+    <input id="document" type="file" onchange="onGetFile(this)" accept=".docx" />
+    <br>
+    <div id="container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.js"></script>
+    <script>
+       function onGetFile(el) {
+         var file = el. files[0]
+    
+         var options = { inWrapper: false, ignoreWidth: true, ignoreHeight: true } // https://github.com/VolodymyrBaydalka/docxjs#api
+         docx.renderAsync(file, document.getElementById("container"), null, options)
+           .then(x => console.log("docx: finished", document.getElementById("container").innerHTML));
+       }
+    </script>
+</body>
+</html>

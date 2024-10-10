@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview and Download PDF</title>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #mainContainer {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        #button-pdf {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>PDF Preview and Download Example</h1>
+
+    <textarea id="content" rows="10" cols="50" placeholder="Type your content here..."></textarea>
+
+    <div id="preview">
+        <h2>Preview</h2>
+        <div id="mainContainer"></div>
+    </div>
+
+    <button id="button-pdf">Download PDF</button>
+
+    <script>
+        // Function to update the preview
+        $('#content').on('input', function() {
+            $('#mainContainer').html($(this).val());
+        });
+
+        // Function to download PDF
+        $('#button-pdf').on('click', function() {
+            //const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            pdf.addHTML($("#mainContainer"), 0, -20, { useCORS: true, pagesplit: true }, function() {
+             
+                pdf.save('{{downloaded_file_name}}.pdf');
+                $("#button-pdf").removeAttr('hidden', 'true')
+            });
+        });
+    </script>
+</body>
+</html>

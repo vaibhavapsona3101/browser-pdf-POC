@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to HTML and PDF Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9; /* Light background for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>DOCX to HTML and PDF Converter with page break</h1>
+    <input id="document" type="file" onchange="onGetFile(this)" accept=".docx" />
+    <button id="pdfButton" onclick="generatePDF()" style="margin-top: 20px; display: none;">Generate PDF</button>
+    <div id="container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        function onGetFile(el) {
+            var file = el.files[0];
+            var container = document.getElementById("container");
+            container.innerHTML = ""; // Clear previous content
+            
+            var options = { inWrapper: false, ignoreWidth: true, ignoreHeight: true }; // Options for docx-preview
+            
+            docx.renderAsync(file, container, null, options)
+                .then(() => {
+                    console.log("docx: finished");
+                    // Get the HTML content from the container
+                    var htmlContent = container.innerHTML;
+                    console.log("Generated HTML:", htmlContent); // Print the generated HTML to console
+                    
+                    // Show the PDF button
+                    document.getElementById("pdfButton").style.display = "block";
+                })
+                .catch(error => console.error("Error rendering docx:", error));
+        }
+
+        function generatePDF() {
+            const container = document.getElementById("container");
+            const { jsPDF } = window.jspdf;
+
+            // Options for html2pdf, setting the page break mode
+             // Use html2canvas to capture the HTML content as an image
+             html2canvas(container, { useCORS: true }).then(canvas => {
+                const imgData = canvas.toDataURL("image/png");
+
+                // Create a new PDF
+                const pdf = new jsPDF('p', 'mm', 'a4');
+
+                const imgWidth = 210; // A4 width
+                const pageHeight = 297; // A4 height
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+
+                let position = 0;
+
+                // Add the first image
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                // Add additional pages if content overflows
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight; // Adjust position for the next page
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight; // Decrease height left by the page height
+                }
+
+                // Remove the hidden div
+                // document.body.removeChild(hiddenDiv);
+
+                // Get PDF as Blob and display in iframe
+                const pdfBlob = pdf.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                // document.getElementById('pdf-frame').src = pdfUrl;
+
+                pdf.save("myfile.pdf");  // This triggers the download
+
+                console.log(8884)
+            }).catch(err => {
+                console.error('Error rendering the PDF:', err);
+            });
+        }
+    </script>
+</body>
+</html>

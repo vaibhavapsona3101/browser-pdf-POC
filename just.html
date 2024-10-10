@@ -1,0 +1,741 @@
+<!--docxjs library predefined styles-->
+<style>
+    .docx-wrapper {
+        background: gray;
+        padding: 30px;
+        padding-bottom: 0px;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+    }
+
+    .docx-wrapper>section.docx {
+        background: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        margin-bottom: 30px;
+    }
+
+    .docx {
+        color: black;
+    }
+
+    section.docx {
+        box-sizing: border-box;
+        display: flex;
+        flex-flow: column nowrap;
+        position: relative;
+        overflow: hidden;
+    }
+
+    section.docx>article {
+        margin-bottom: auto;
+    }
+
+    .docx table {
+        border-collapse: collapse;
+    }
+
+    .docx table td,
+    .docx table th {
+        vertical-align: top;
+    }
+
+    .docx p {
+        margin: 0pt;
+        min-height: 1em;
+    }
+
+    .docx span {
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+    }
+
+    .docx a {
+        color: inherit;
+        text-decoration: inherit;
+    }
+</style><!--docxjs document theme values-->
+<style>
+    .docx {
+        --docx-majorHAnsi-font: Calibri;
+        --docx-minorHAnsi-font: Cambria;
+        --docx-dk1-color: #000000;
+        --docx-lt1-color: #FFFFFF;
+        --docx-dk2-color: #1F497D;
+        --docx-lt2-color: #EEECE1;
+        --docx-accent1-color: #4F81BD;
+        --docx-accent2-color: #C0504D;
+        --docx-accent3-color: #9BBB59;
+        --docx-accent4-color: #8064A2;
+        --docx-accent5-color: #4BACC6;
+        --docx-accent6-color: #F79646;
+        --docx-hlink-color: #0000FF;
+        --docx-folHlink-color: #800080;
+    }
+</style><!--docxjs document styles-->
+<style>
+    .docx span {
+        font-family: Arial;
+        min-height: 11.00pt;
+        font-size: 11.00pt;
+    }
+
+    .docx p {
+        line-height: 1.15;
+    }
+
+    p.docx_heading1 {
+        margin-top: 20.00pt;
+        margin-bottom: 6.00pt;
+    }
+
+    p.docx_heading1 span {
+        min-height: 20.00pt;
+        font-size: 20.00pt;
+    }
+
+    p.docx_heading2 {
+        margin-top: 18.00pt;
+        margin-bottom: 6.00pt;
+    }
+
+    p.docx_heading2 span {
+        font-weight: normal;
+        min-height: 16.00pt;
+        font-size: 16.00pt;
+    }
+
+    p.docx_heading3 {
+        margin-top: 16.00pt;
+        margin-bottom: 4.00pt;
+    }
+
+    p.docx_heading3 span {
+        font-weight: normal;
+        color: #434343;
+        min-height: 14.00pt;
+        font-size: 14.00pt;
+    }
+
+    p.docx_heading4 {
+        margin-top: 14.00pt;
+        margin-bottom: 4.00pt;
+    }
+
+    p.docx_heading4 span {
+        color: #666666;
+        min-height: 12.00pt;
+        font-size: 12.00pt;
+    }
+
+    p.docx_heading5 {
+        margin-top: 12.00pt;
+        margin-bottom: 4.00pt;
+    }
+
+    p.docx_heading5 span {
+        color: #666666;
+        min-height: 11.00pt;
+        font-size: 11.00pt;
+    }
+
+    p.docx_heading6 {
+        margin-top: 12.00pt;
+        margin-bottom: 4.00pt;
+    }
+
+    p.docx_heading6 span {
+        font-style: italic;
+        color: #666666;
+        min-height: 11.00pt;
+        font-size: 11.00pt;
+    }
+
+    p.docx_title {
+        margin-top: 0.00pt;
+        margin-bottom: 3.00pt;
+    }
+
+    p.docx_title span {
+        min-height: 26.00pt;
+        font-size: 26.00pt;
+    }
+
+    p.docx_subtitle {
+        margin-top: 0.00pt;
+        margin-bottom: 16.00pt;
+    }
+
+    p.docx_subtitle span {
+        font-family: Arial;
+        font-style: normal;
+        color: #666666;
+        min-height: 15.00pt;
+        font-size: 15.00pt;
+    }
+
+    table.docx_table1 td {
+        padding-top: 5.00pt;
+        padding-left: 5.00pt;
+        padding-bottom: 5.00pt;
+        padding-right: 5.00pt;
+    }
+
+    table.docx_table2 td {
+        padding-top: 5.00pt;
+        padding-left: 5.00pt;
+        padding-bottom: 5.00pt;
+        padding-right: 5.00pt;
+    }
+
+    table.docx_table3 td {
+        padding-top: 5.00pt;
+        padding-left: 5.00pt;
+        padding-bottom: 5.00pt;
+        padding-right: 5.00pt;
+    }
+
+    table.docx_table4 td {
+        padding-top: 5.00pt;
+        padding-left: 5.00pt;
+        padding-bottom: 5.00pt;
+        padding-right: 5.00pt;
+    }
+
+    table.docx_table5 td {
+        padding-top: 5.00pt;
+        padding-left: 5.00pt;
+        padding-bottom: 5.00pt;
+        padding-right: 5.00pt;
+    }
+
+    table.docx_table6 td {
+        padding-top: 5.00pt;
+        padding-left: 5.00pt;
+        padding-bottom: 5.00pt;
+        padding-right: 5.00pt;
+    }
+</style><!--docxjs document numbering styles-->
+<style></style>
+<section class="docx" style="padding: 31.5pt 72pt 72pt;">
+    <article>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>Accname:
+                &lt;&lt;accname&gt;</span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>Address:
+                &lt;&lt;address&gt;&gt;</span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>Mob: &lt;&lt;mobNo&gt;&gt;</span>
+        </p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>Date:
+                &lt;&lt;datebh&gt;&gt;</span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>hey:&lt;&lt;jjjjlm&gt;&gt;</span>
+        </p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>Jjjj:
+                &lt;&lt;kerybn&gt;&gt;</span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>
+                <div
+                    style="display: inline-block; position: relative; text-indent: 0px; width: 194.25pt; height: 145.5pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 194.25pt; height: 145.5pt;"></div>
+            </span><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 312pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 312pt;"></div>
+            </span><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 312pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 312pt;"></div>
+            </span><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 312pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 312pt;"></div>
+            </span><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 312pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 312pt;"></div>
+            </span><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 312pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 312pt;"></div>
+            </span><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 312pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 312pt;"></div>
+            </span><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 312pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 312pt;"></div>
+            </span><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <table class="no-hband no-vband docx_table1" style="width: 499.5pt; text-align: left; table-layout: auto;">
+            <colgroup>
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+            </colgroup>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p
+                        style="border-width: initial; border-style: none; border-color: initial; background-color: inherit; margin: 0pt; line-height: 1; text-indent: 0pt; text-align: left;">
+                        <span>accName</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p
+                        style="border-width: initial; border-style: none; border-color: initial; background-color: inherit; margin: 0pt; line-height: 1; text-indent: 0pt; text-align: left;">
+                        <span>id</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p
+                        style="border-width: initial; border-style: none; border-color: initial; background-color: inherit; margin: 0pt; line-height: 1; text-indent: 0pt; text-align: left;">
+                        <span>heythre</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p
+                        style="border-width: initial; border-style: none; border-color: initial; background-color: inherit; margin: 0pt; line-height: 1; text-indent: 0pt; text-align: left;">
+                        <span>&lt;&lt;TableStart:grpOne&gt;&gt;&lt;&lt;accountNAme&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p
+                        style="border-width: initial; border-style: none; border-color: initial; background-color: inherit; margin: 0pt; line-height: 1; text-indent: 0pt; text-align: left;">
+                        <span>&lt;&lt;Amount&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p
+                        style="border-width: initial; border-style: none; border-color: initial; background-color: inherit; margin: 0pt; line-height: 1; text-indent: 0pt; text-align: left;">
+                        <span>&lt;&lt;desc&gt;&gt;&lt;&lt;TableEnd&gt;&gt;</span></p>
+                </td>
+            </tr>
+        </table>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <table class="no-hband no-vband docx_table2" style="width: 499.5pt; text-align: left; table-layout: auto;">
+            <colgroup>
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+            </colgroup>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>accName</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>id</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>heythre</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;TableStart:grptwi&gt;&gt;&lt;&lt;oppname&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;oppam&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;oppies&gt;&gt;&lt;&lt;TableEnd&gt;&gt;</span></p>
+                </td>
+            </tr>
+        </table>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <table class="no-hband no-vband docx_table3" style="width: 499.5pt; text-align: left; table-layout: auto;">
+            <colgroup>
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+            </colgroup>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>accName</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>id</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>heythre</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;">
+                        <span>&lt;&lt;TableStart:grpDan&gt;&gt;&lt;&lt;accounteeeeNAme&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;Amoueeeent&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;drresc&gt;&gt;&lt;&lt;TableEnd&gt;&gt;</span></p>
+                </td>
+            </tr>
+        </table>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <table class="no-hband no-vband docx_table4" style="width: 499.5pt; text-align: left; table-layout: auto;">
+            <colgroup>
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+            </colgroup>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>accName</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>id</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>heythre</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;">
+                        <span>&lt;&lt;TableStart:grpgsgdgdgDan&gt;&gt;&lt;&lt;accounteeeeNAme&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;Amouegsgseeent&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;drregsgsc&gt;&gt;&lt;&lt;TableEnd&gt;&gt;</span></p>
+                </td>
+            </tr>
+        </table>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <table class="no-hband no-vband docx_table5" style="width: 499.5pt; text-align: left; table-layout: auto;">
+            <colgroup>
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+            </colgroup>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>accName</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>id</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>heythre</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;">
+                        <span>&lt;&lt;TableStart:grpgdgdDan&gt;&gt;&lt;&lt;accounteeeeNAme&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;Amouegsgfeeent&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;drrgsfgesc&gt;&gt;&lt;&lt;TableEnd&gt;&gt;</span></p>
+                </td>
+            </tr>
+        </table>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span></span></p>
+        <table class="no-hband no-vband docx_table6" style="width: 499.5pt; text-align: left; table-layout: auto;">
+            <colgroup>
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+                <col style="width: 166.5pt;">
+            </colgroup>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>accName</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>id</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>heythre</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;">
+                        <span>&lt;&lt;TableStart:grpgdgDan&gt;&gt;&lt;&lt;accounteeeeNgsgAme&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;Amouesgsgeeent&gt;&gt;</span></p>
+                </td>
+                <td
+                    style="background-color: inherit; padding: 5pt; vertical-align: top; border-width: 1pt; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <p style="line-height: 1;"><span>&lt;&lt;drregdgsc&gt;&gt;&lt;&lt;TableEnd&gt;&gt;</span></p>
+                </td>
+            </tr>
+        </table>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>
+                <div style="display: inline-block; position: relative; text-indent: 0px; width: 468pt; height: 759pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 468pt; height: 759pt;"></div>
+            </span><span></span></p>
+        <p style="text-indent: 0pt; margin-left: -31.5pt; margin-right: -27pt;"><span>
+                <div
+                    style="display: inline-block; position: relative; text-indent: 0px; width: 262.5pt; height: 197.25pt;">
+                    <img style="position: relative; left: 0pt; top: 0pt; width: 262.5pt; height: 197.25pt;"></div>
+            </span><span>This report explores the significance of wildlife trade to poor people and poor countries.
+                Drawing on case studies documenting the trade in wild meat, coastal fisheries products and skins and
+                wool—as well as the wider literature on trade in non-timber forest products (NTFPs)—the report assesses
+                the ways in which sustainable wildlife trade contributes to securing more sustainable livelihoods and
+                delivering on the MDGs. Significant contributions can be shown across the majority of the MDGs, but it
+                is an unfortunate reality that much of wildlife trade is currently unsustainable and poorly managed.
+                This runs the risk of undermining the very resource base on which many poor people are so dependent— and
+                in turn, undermining the achievement of the other MDGs. This report therefore also looks at the
+                importance of effective management of the trade in wild species in order to maximize its potential to
+                deliver on the MDGs. The report begins with a general introduction to wildlife trade and its links to
+                delivery of the MDGs, followed by a summary of different mechanisms used to manage the trade. The
+                importance of the trade to the MDGs is then considered in more detail through drawing on the case
+                studies and an exploration of the wider literature. The challenges of maximizing the development
+                potential of the trade are highlighted and conclusions stemming from the discussion provided. The three
+                case studies give examples of wildlife trade management in practice in Africa (wild meat), South America
+                (skins and wool) and South-east Asia (coastal fisheries products). METHODOLOGY The research for this
+                report was conducted as a desk-based study including a literature review (covering both “grey” and
+                published literature), consultations with relevant experts and, where relevant, review of web-based
+                project documents and other information. The case studies were selected to illustrate the major
+                commodity types (not including commercial timber and fisheries) within wildlife trade—wild meat, skins
+                and wool, ornamental and food fish; different regional contexts—Africa, Asia and Latin America; and very
+                different governance contexts and management regimes. A note on definitions Many of the examples used in
+                this report are from the literature on NTFPs which have been defined as “all biological materials other
+                than timber which are extracted from forests for human use” (de Beer and McDermott, 1996). There is,
+                however, no universal agreement as to what is and what is not an NTFP (Belcher, 2003) although van Andel
+                et al. (2003) note that wildlife (by which they mean products of animal origin) are often excluded from
+                NTFP inventories. To further complicate matters, the Food and Agriculture Organization of the United
+                Nations (FAO), a source of much of the analysis on the nature and scale of trade in wild resources, uses
+                the term nonwood forest product (NWFP), which they define as “products of biological origin other than
+                wood derived from forests, wooded lands and trees outside forests” (FAO, 2001), rather than NTFP.
+                TRADING NATURE:Wildlife trade and the Millennium Development Goals 3 Furthermore, the term “forest”
+                itself has no single definition, and NTFP/NWFP are increasingly applied to wild species (primarily
+                terrestrial) from a variety of habitats. Much of the literature on the trade in NTFP/NWFPs would thus
+                appear to be applicable to the trade in the majority of wildlife species and has thus been included in
+                our analysis whether or not labelled as wildlife. In the context of this report the term “wildlife” is
+                used to describe wild animal, plant and fungal species, terrestrial and aquatic, that continue to occur
+                in the wild regardless of whether or not domestic varieties have been developed—this encompasses those
+                products described as NTFPs or NWFPs. Similarly the term “wildlife trade” is used to describe the sale
+                or exchange by people of such wildlife resources—including live specimens and their derivatives.
+                BACKGROUND What is wildlife trade? Wildlife trade, in simple terms, is any sale or exchange by people of
+                wild animal and plant resources. Wild species are traded in many forms in order to produce a wide
+                variety of products. Major uses (Roe et al., 2002) include: Medicines: Many medicines, both traditional
+                and “western” are based on wild plants or compounds extracted from them. Based on a review of published
+                medicinal floras, Schippmann et al. (2006) estimate that 50 000–70 000 plant species are used in
+                traditional and modern medical systems throughout the world. The same authors propose that approximately
+                3000 medicinal and aromatic plant (MAP) species are involved in international trade, based on the number
+                of documented species imported to and exported from major centres of MAP trade. Food: Although most
+                wildlife hunted or collected for use as food is consumed directly, there is a substantial international
+                trade in a variety of NTFPs (Table 1). The trade in fisheries products dominates the food trade in
+                animal species. Ornaments and furnishings: A wide variety of wildlife products are used for decoration
+                and ornamental purposes including: wood, ivory, coral, turtle and mollusc shells, reptile and other
+                skins, and feathers. Tourist items are often crafted from local wildlife, including jewellery and
+                ornaments Myrtle Myrta communis,Tunisia Credit: WWF-Canon/Michel Gunther 4 TRADING NATURE:Wildlife trade
+                and the Millennium Development Goals crafted from corals and shells, curios such as insects or other
+                small animals encased in plastic and stuffed animals. Clothing: Skins, furs, feathers and wool from many
+                mammal, reptile, bird and fish species are traded internationally to make clothing, boots and shoes,
+                bags and other items. These include expensive and high fashion items, e.g. shahtoosh shawls made from
+                the endangered Tibetan Antelope Pantholops hodgsonii, as well as more widely available and legally
+                traded products such as snake skin accessories (e.g. belts, wallets). Pets/hobbies: The increased
+                availability of air transport around the world has greatly expanded the variety and numbers of wild
+                species traded for use as pets or as hobbies. The international trade is dominated by reptiles, birds
+                and ornamental fish, but includes invertebrate species such as scorpions and spiders. Ornamental plants:
+                A significant percentage of what are now considered common garden and indoor plants (including snowdrops
+                Gallanthus spp., crocuses Crocus spp., cyclamens Cyclamen spp., palms and so on) are the product of
+                international trade that has been taking place for centuries. Although much of the trade now involves
+                artificially propagated plants, there are still millions of wild plants traded internationally each
+                year, including a specialist trade in rare species. Manufacturing and construction: Forest products
+                including timber, rattan and bamboo for furniture making, plant oils and gums, dyes, resins, latex, etc.
+                are all traded internationally in large volumes. Relatively few of the products listed in Table 1 are
+                commonly thought of as being components of “wildlife trade”, with the exception of wild animals and
+                animal products, ornamental and medicinal plants and incense woods (Broad et al., 2003). The scale of
+                the international trade in more “typical” (if actually less common) wildlife products is illustrated by
+                recent data for species covered by the Convention on International Trade in Endangered Species of Wild
+                Fauna and Flora (CITES) (Table 2). Credit: Ronald Petocz/WWF-Canon A herd of endangered Tibetan Antelope
+                Pantholops hodgsonii on the Aqik Lake plain, Arjin Mountains, Xinjiang, China Credit: Michel
+                Gunther/WWF-Canon Wild snowdrop harvest,Turkey TRADING NATURE:Wildlife trade and the Millennium
+                Development Goals 5 Table 1 Commercially significant wild resources in international trade Source: Iqbal
+                1993, as cited in Iqbal 1995. Category Product FOOD PRODUCTS Nuts: brazil nuts, pine nuts, pignolia
+                nuts, malva nuts, walnuts and chestnuts Fruits: jujube, sapodilla, ginkgo Fungi: morels, truffles, pine
+                mushrooms Vegetables: bamboo shoots, osmunds, reindeer moss, palm hearts Starches: sago Bird nests Oils:
+                shea nuts, babassu oil, illipe oil Maple sugar HERBS AND SPICES Nutmeg, mace, cinnamon, cassia,
+                cardamom, Galanga, allspice, caraway, bay leaves, oregano etc. INDUSTRIAL PLANT OILS AND WAXES Tung oil,
+                neem oil, jojoba oil, kemiri (candle, lumbang) oil, akar wangi, babassu, oticica and kapok oils Carnauba
+                wax PLANT GUMS For food uses: gum arabic, tragacanth, karaya, carob Technological grade gums: talha,
+                combretum NATURAL PIGMENTS Annatto seeds, logwood, indigo OLEORESINS Pine oleoresin, copal, damar,
+                gamboge, benzoin gum, dragon's blood (Benjamin), copaiba oil, amber FIBRES AND FLOSSES Fibres: bamboo,
+                rattan, xateattap, aren, osier, raffia, toquilla straw products, cork, esparto, Erica and other broom
+                grasses Flosses: kapok or silk cotton VEGETABLE TANNING MATERIALS Quebracho, mimosa, chestnut and
+                catha/cutch LATEX Natural rubber, gutta percha, jelutong, sorva and chicle INSECT PRODUCTS Honey,
+                beeswax, lac and lac-dye, silk, cochineal, aleppo galls, kermes INCENSE WOODS Sandalwood, gharu or
+                aloewood [agarwood] ESSENTIAL OILS Various PLANT INSECTICIDES Pyrethrum, derris, medang and peuak bong
+                MEDICINAL PLANTS Various WILD PLANTS Various ANIMALS AND ANIMAL PRODUCTS Ivory, trophies, skins,
+                feathers, eggs, butterflies, live animals and birds MISCELLANEOUS bidi leaves, soap nut, Quillaia bark,
+                betel and cola nuts, chewing sticks, lacquer, dom nuts or ivory nuts 6 TRADING NATURE:Wildlife trade and
+                the Millennium Development Goals What is wildlife trade worth? Quantifying the value of wildlife trade
+                is not easy—the use and trade of wild species is multi-faceted and encompasses many dimensions and
+                scales: • The majority of wild resources have low cash value and are used for direct consumption rather
+                than sale (Wollenberg and Belcher, 2001; Belcher et al., 2007). • The dividing line between subsistence
+                use of wildlife and wildlife trade is often blurred (Burgess, 1992; Freese, 1998): wildlife and wildlife
+                products are often consumed Table 2 The scale of reported international trade in CITES-listed species
+                (2000–2005) Commodity Type Numbers of specimens Live birds Birds of prey (Falconiformes) 30 000 Parrots
+                (Psittacidae) 2.5 million Song birds (Passerines) 3.9 million Others 300 000 Live reptiles and
+                amphibians Tortoises 600 000 Lizards 5.6 million Snakes 1.7 million Amphibians 236 000 Reptile skins
+                Crocodiles 11.1 million Lizards 10.7 million Snakes 8.2 million Invertebrates Corals 6.5 million Others
+                (e.g.live or dead insects, 3 million spiders, butterflies, beetles) Plants Galanthus plants or bulbs 244
+                million Orchids 370 million Cacti 88 million Cyclamen plants or bulbs 18 million Tropical Timber
+                Mahogany 745 000 m3 Pericopsis spp. 71 000 m3 Ramin 322 000 m3 Source: Adapted from Engler and
+                Parry-Jones (2007) based on CITES annual report data compiled by UNEPWCMC. "We do not go out to hunt
+                wildlife, we just collect it when we see it; all households do this". Villager from Chham Thom,
+                Cambodia, cited in Singh et al., 2006b. TRADING NATURE:Wildlife trade and the Millennium Development
+                Goals 7 directly and sold in to the cash economy by the same people and in the same locations (Broad et
+                al., 2003). • Wildlife may be sold and used locally, transported for sale in urban centres, sent across
+                national borders to markets in neighbouring countries or shipped half way around the world. • The number
+                and characteristics of actors involved in the trade vary with the species and product involved and trade
+                chains between harvester and end-consumer are often highly complex. • Most wildlife trade occurs within
+                national borders; for example, in Brazil it was estimated that 70% of wild animals were sold within the
+                country (van Andel, 2003). The nature of such trade is that it is often carried out through informal
+                networks and not documented or captured in government statistics (Broad et al., 2003). • Not all
+                wildlife trade is legal, and therefore is not open to scrutiny, and some legal trade is not subject to
+                any official reporting requirements. • Comprehensive trade data only exist for species covered by
+                CITES—and even here problems with the accuracy of CITES trade reporting mean that trade data are
+                indicative rather than actual. Customs data provide information on levels of processing and overall
+                trade volumes, but rarely on the species or number of specimens involved. Nevertheless, it is clear that
+                wildlife trade is a major industry. The value of legal, international wildlife trade is estimated to be
+                worth nearly USD300 billion in 2005, based on declared import values (Table 3). This figure contrasts
+                with a declared import value of EUR14 billion (USD17 billion) for the global trade in coffee, tea and
+                spices in 2005 (Engler and Parry-Jones, 2007). A discernible trend also seems to be a steady increase in
+                value. Even without timber and fisheries included, reported international trade in wildlife commodities
+                has increased from “at least” USD5 billion per annum in the 1980s (Fitzgerald, 1989), to over USD15
+                billion in the early 1990s (Broad et al., 2003), to over USD21 billion by 2005 (Table 3). Figure 1
+                illustrates this trend for a number of key commodities. Dried seahorses collected for medicine,
+                Philippines Credit: WWF-Canon/Jürgen Freund 8 TRADING NATURE:Wildlife trade and the Millennium
+                Development Goals Table 3 Estimate of the value of the international wildlife trade in 2005 Commodity
+                Estimated value in 2005 (USD) Live animals Primates 94 million Cage birds 47 million Birds of prey 6
+                million Reptiles and amphibians 38 million Ornamental fish 319 million Animal products for
+                clothing/ornaments etc. Mammal furs and fur products 5 billion Reptile skins 338 million Ornamental
+                corals and shells 112 million Natural pearls 80 million Animal products for food (excluding fish) Game
+                meat 773 million Frogs legs 50 million Edible snails 75 million Plants Medicinal plants 1.3 billion
+                Ornamental plants 13 billion TOTAL (not including fisheries and timber) 21.2 billion Wild fisheries*
+                81.5 billion Timber 190 billion TOTAL 292.7 billion Source: Engler (in prep.), based on UN Statistics
+                Division Commodity Trade Statistics Database except * from FAO Fisheries Statistics TRADING
+                NATURE:Wildlife trade and the Millennium Development Goals 9 What relevance does wildlife trade have to
+                the MDGs? The MDGs provide the overarching policy framework for international poverty reduction and
+                development assistance efforts. They focus on key development concerns including income poverty, hunger,
+                child and maternal health, universal primary education, and access to safe water and sanitation (Table
+                4). Even at the time of their formulation, the MDGs were not new ambitions—they are largely a
+                consolidation of commitments made at various UN conferences since the pivotal UN Conference on the Human
+                Environment held in Stockholm in 1972 (Satterthwaite, 2003). What is unusual about them, however, is the
+                unprecedented level of commitment from national and international agencies and from the public, private
+                and civil society sectors. As a result, any efforts to address poverty reduction and human development
+                must be set within the context of the MDGs in order to ensure their relevance to this global effort. A
+                consideration of the potential of wildlife trade is relevant to discussions concerning the delivery of
+                the MDGs for a number of reasons: 1. As noted above, wildlife trade is big business and a significant
+                portion of this value is captured by poor countries and by poor people; 2. Conversely, unsustainable,
+                poorly-managed wildlife trade can contribute to biodiversity loss and undermine the subsistence base of
+                many poor people’s livelihoods. Figure 1 Changes in the value of the reported international trade in
+                major wild resources— 1995–2005 0 500 1000 1500 2000 2500 Plants used in pharmacy, Nuts Essential oils
+                Cork Natural honey Gums and resins Live animals Spices Bamboo and rattan Ivory Product US$ millions 1995
+                2005 Source: 2005 data from Engler (in prep.), based on UN Statistics Division Commodity Trade
+                Statistics Database; 1995 data from Iqbal (1995). USD Plants used in pharmacy Nuts Essential oils Cork
+                Natural honey Gums and resins Live animals Spices Bamboo and rattan Ivory 10 TRADING NATURE:Wildlife
+                trade and the Millennium Development Goals Table 4 A summary of the Millennium Development Goals and
+                Targets Goal Targets 1. Eradicate extreme poverty and hunger 1. Reduce by half the proportion of people
+                living on less than a dollar a day; (achieve full and productive employment and decent work for all,
+                including women and young people) 2. Reduce by half the proportion of people who suffer from hunger 2.
+                Achieve universal primary education 3. Ensure that all boys and girls complete a full course of primary
+                schooling 3. Promote gender equality and empower women 4. Eliminate gender disparity in primary and
+                secondary education 4. Reduce child mortality 5. Reduce by two thirds the mortality rate among children
+                under five 5. Improve maternal health 6. Reduce by three quarters the maternal mortality ratio;
+                (achieve, by 2015, universal access to reproductive health) 6. Combat HIV/AIDs, malaria and other
+                diseases 7. Halt and begin to reverse the spread of HIV/AIDS; (achieve, by 2010, universal access to
+                treatment for HIV/AIDS for all those who need it) 8. Halt and begin to reverse the incidence of malaria
+                and other major diseases 7. Ensure environmental sustainability 9. Integrate the principles of
+                sustainable development into country policies and programmes; reverse loss of environmental resources;
+                (Reduce biodiversity loss, achieving, by 2010, a significant reduction in the rate of loss) 10. Reduce
+                by half the proportion of people without sustainable access to safe drinking water 11. Achieve
+                significant improvement in lives of at least 100 million slum dwellers, by 2020 8. Develop a global
+                partnership for development 12. Develop further an open, rule-based, predictable, non-discriminatory
+                trading and financial system. Includes a commitment to good governance, development, and poverty
+                reduction 13. Address the special needs of the least developed countries 14. Address the special needs
+                of landlocked countries and small island developing States 15. Deal comprehensively with the debt
+                problems of developing countries 16. In co-operation with developing countries, develop and implement
+                strategies for decent and productive work for youth 17. In co-operation with pharmaceutical companies,
+                provide access to affordable essential drugs in developing countries 18. In co-operation with the
+                private sector, make available the benefits of new technologies, especially information and
+                communications Note: italicized text refers to additional targets signed at the UN General Assembly in
+                June 2006. TRADING NATURE:Wildlife trade and the Millennium Development Goals 11 The case studies and
+                the wider literature reviewed for this report also indicate that a well-managed, sustainable wildlife
+                trade can contribute to: • food security (either directly through increased access to protein from wild
+                meat or fish, or indirectly by increasing household incomes and hence ability to purchase high value
+                food); • health, through access to traditional medicines, plant-based pharmaceuticals and more secure
+                protein supplies; • gender equity, recognizing that women are often involved in NTFP harvests, through
+                specific opportunities for women within the trade; • education targets by enabling poor households to
+                cover school fees (Roe et al., 2002). • a global partnership for development through more equitable
+                trading and benefit-sharing arrangements and through improved governance of natural resources. "The
+                contributions of fisheries to the MDGs are of two kinds: direct contribution to specific goals and
+                indirect support to all the goals through enhanced livelihoods. It is a strength of fisheries, and in
+                particular of small-scale fisheries, that it enables millions of poor fishers, processors and traders to
+                diversify their livelihood strategies on the basis of income and commercial skills while at the same
+                time supplying vast numbers of poor consumers with essential nutrition". WorldFish Center, 2005. Fish
+                smoking, Mafia Island,Tanzania Credit: Jason Rubens/WWF-Canon 12 TRADING NATURE:Wildlife trade and the
+                Millennium Development Goals Some of these contributions can be direct (cash, jobs, more food, more
+                equitable trading arrangements, etc) and well-managed wildlife trade can help enhance livelihood
+                security over the longer term, thus reducing the vulnerability of poor people to external shocks and
+                indirectly supporting all the goals. How management of wildlife trade can enhance its contribution to
+                the MDGs Before moving on to consider wildlife trade contributions in detail, recognizing the difference
+                that management of wildlife trade can make to its ecological and socio-economic impacts, this section
+                concludes with a brief overview of the ways in which wildlife trade is managed at different levels,from
+                global to local. These different approaches are considered in more detail within the individual case
+                studies. Wildlife trade is managed through a variety of measures—regulatory and voluntary, formal and
+                informal, direct and indirect—and at a variety of levels from global to local. For some species or taxa,
+                regional or bilateral agreements exist or species/taxa-specific action plans. Wildlife trade regulation
+                has been reviewed in detail elsewhere (see Roe et al., 2002; Oldfield, 2003; Burgener, 2007) and such
+                review is not repeated here. However, the main international and national regulatory measures are
+                briefly reviewed below along with mention of local approaches based on customary law and traditional
+                institutions and an introduction to the voluntary approaches that are becoming a significant complement
+                to regulation. International trade controls The best known instrument for managing international trade
+                in wildlife is CITES which came into effect in 1975 and which has over 170 member countries (Parties).
+                By acceding to CITES, Parties agree to controls (both export and import) on international trade in
+                species that are listed in one of the Convention’s three Appendices: Appendix I includes species that
+                are considered by the Parties to be threatened with extinction. International trade is generally
+                prohibited although exceptions can be made (e.g. for sporthunted trophies) as long as the export is
+                deemed not detrimental to the wild population and the import is not for commercial purposes. Appendix II
+                includes species that are not necessarily threatened with extinction but that might become so unless
+                trade is closely controlled. It also includes species that are not of conservation concern, but which
+                resemble other CITES-listed species so closely that their trade needs to be regulated in order to assist
+                trade control measures for the more threatened species. Appendix III includes species for which a Party
+                considers the co-operation of other countries to be necessary to prevent unsustainable or illegal trade
+                in native species. </span></p>
+    </article>
+</section>

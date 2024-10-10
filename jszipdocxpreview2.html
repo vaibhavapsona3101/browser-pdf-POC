@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to HTML and PDF Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9; /* Light background for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>DOCX to HTML and PDF Converter</h1>
+    <input id="document" type="file" onchange="onGetFile(this)" accept=".docx" />
+    <button id="pdfButton" onclick="generatePDF()" style="margin-top: 20px; display: none;">Generate PDF</button>
+    <div id="container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        function onGetFile(el) {
+            var file = el.files[0];
+            var container = document.getElementById("container");
+            container.innerHTML = ""; // Clear previous content
+            
+            var options = { inWrapper: false, ignoreWidth: true, ignoreHeight: true }; // Options for docx-preview
+            
+            docx.renderAsync(file, container, null, options)
+                .then(() => {
+                    console.log("docx: finished");
+                    // Get the HTML content from the container
+                    var htmlContent = container.innerHTML;
+                    console.log("Generated HTML:", htmlContent); // Print the generated HTML to console
+                    
+                    // Show the PDF button
+                    document.getElementById("pdfButton").style.display = "block";
+                })
+                .catch(error => console.error("Error rendering docx:", error));
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+
+            const pdf = new jsPDF();
+
+            // Get the content from the container
+            const container = document.getElementById("container");
+
+            // Use html2canvas to capture the content as an image
+            html2canvas(container).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                
+                // Add the image to the PDF
+                pdf.addImage(imgData, 'PNG', 10, 10, 190, (canvas.height * 190) / canvas.width);
+                
+                // Save the generated PDF
+                pdf.save('document.pdf');
+            });
+            
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to HTML Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9; /* Light background for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Convert DOCX to HTML</h1>
+<input type="file" id="upload" accept=".docx" />
+<button id="convert">Convert</button>
+
+<h2>Output HTML:</h2>
+<div id="output"></div>
+
+<script>
+    document.getElementById('convert').addEventListener('click', function() {
+        const input = document.getElementById('upload');
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            const arrayBuffer = event.target.result;
+
+            mammoth.convertToHtml({arrayBuffer: arrayBuffer})
+                .then(function(result) {
+                    const outputDiv = document.getElementById('output');
+                    outputDiv.innerHTML = result.value; // Properly set HTML output
+                    console.log(result.value); // Log the output for debugging
+                })
+                .catch(function(err) {
+                    console.error(err);
+                    alert("Error converting file: " + err.message);
+                });
+        };
+
+        if (input.files.length > 0) {
+            reader.readAsArrayBuffer(input.files[0]);
+        } else {
+            alert("Please upload a DOCX file.");
+        }
+    });
+</script>
+
+</body>
+</html>

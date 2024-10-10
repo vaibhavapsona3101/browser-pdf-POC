@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced DOCX to PDF Conv  erter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #controls {
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+            padding-right: 20px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        p, td, th {
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 0; /* Remove default margins */
+        }
+
+        h1, h2, h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid; /* Avoid breaking after headings */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; /* Add spacing below tables */
+            page-break-inside: auto; /* Avoid breaking inside tables */
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="controls">
+        <h1>DOCX to PDF Converter</h1>
+        <input type="file" id="upload" accept=".docx" />
+        <button id="convert">Convert DOCX to PDF</button>
+    </div>
+
+    <iframe id="pdf-frame"></iframe> <!-- For PDF preview -->
+
+    <script>
+        document.getElementById('convert').addEventListener('click', function () {
+            const input = document.getElementById('upload');
+            if (input.files.length === 0) {
+                alert('Please upload a DOCX file.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const arrayBuffer = event.target.result;
+
+                JSZip.loadAsync(arrayBuffer).then(function (zip) {
+                    return Promise.all([
+                        zip.file("word/document.xml").async("string"),
+                        zip.file("word/styles.xml").async("string"),
+                        zip.folder("word/media").file(/.*/).map(file => file.async("base64"))
+                    ]).then(function ([docXML, stylesXML, images]) {
+                        const parser = new DOMParser();
+                        const docXMLDoc = parser.parseFromString(docXML, "application/xml");
+                        const stylesXMLDoc = parser.parseFromString(stylesXML, "application/xml");
+
+                        // Parse styles and create a mapping of styles
+                        const styles = {};
+                        Array.from(stylesXMLDoc.getElementsByTagName("w:style")).forEach(style => {
+                            const styleId = style.getAttribute("w:styleId");
+
+                            // Use getElementsByTagName for namespaced elements like w:sz, w:b, w:i
+                            const fontSizeNode = style.getElementsByTagName("w:sz")[0]; // Get the first matching element
+                            const isBold = style.getElementsByTagName("w:b")[0];
+                            const isItalic = style.getElementsByTagName("w:i")[0];
+
+                            styles[styleId] = {
+                                fontSize: fontSizeNode ? fontSizeNode.getAttribute("w:val") : "12",
+                                bold: isBold ? true : false,
+                                italic: isItalic ? true : false
+                            };
+                        });
+
+                        let htmlContent = '';
+                        const paragraphs = docXMLDoc.getElementsByTagName("w:p");
+
+                        Array.from(paragraphs).forEach(paragraph => {
+                            let paragraphStyle = '';
+
+                            // Use getElementsByTagName for namespaced elements like w:pStyle
+                            const pStyleNode = paragraph.getElementsByTagName("w:pStyle")[0]; // Select first w:pStyle element
+                            if (pStyleNode) {
+                                const styleId = pStyleNode.getAttribute("w:val");
+                                if (styles[styleId]) {
+                                    paragraphStyle = `font-size:${styles[styleId].fontSize}px;`;
+                                    if (styles[styleId].bold) paragraphStyle += "font-weight:bold;";
+                                    if (styles[styleId].italic) paragraphStyle += "font-style:italic;";
+                                }
+                            }
+
+                            let paragraphText = '';
+                            const textNodes = paragraph.getElementsByTagName("w:t");
+                            Array.from(textNodes).forEach(textNode => {
+                                paragraphText += textNode.textContent;
+                            });
+
+                            htmlContent += `<p style="${paragraphStyle}">${paragraphText}</p>`;
+                        });
+
+                        // Handle tables
+                        const tables = docXMLDoc.getElementsByTagName("w:tbl");
+                        Array.from(tables).forEach(tbl => {
+                            htmlContent += "<table border='1'>";
+                            const rows = tbl.getElementsByTagName("w:tr");
+                            Array.from(rows).forEach(row => {
+                                htmlContent += "<tr>";
+                                const cells = row.getElementsByTagName("w:tc");
+                                Array.from(cells).forEach(cell => {
+                                    const cellText = cell.getElementsByTagName("w:t");
+                                    let cellContent = "";
+                                    Array.from(cellText).forEach(textNode => {
+                                        cellContent += textNode.textContent;
+                                    });
+                                    htmlContent += `<td>${cellContent}</td>`;
+                                });
+                                htmlContent += "</tr>";
+                            });
+                            htmlContent += "</table>";
+                        });
+
+                        // Handle images
+                        images.forEach((imageBase64, index) => {
+                            htmlContent += `<img src="data:image/png;base64,${imageBase64}" alt="Image ${index}">`;
+                        });
+
+                        // Handle lists (simple implementation for numbered lists and bullets)
+                        const listNodes = docXMLDoc.getElementsByTagName("w:numPr");
+                        Array.from(listNodes).forEach(listNode => {
+                            htmlContent += "<ul>";
+                            const listItems = listNode.getElementsByTagName("w:t");
+                            Array.from(listItems).forEach(item => {
+                                htmlContent += `<li>${item.textContent}</li>`;
+                            });
+                            htmlContent += "</ul>";
+                        });
+
+                        // Create a hidden div to render the HTML content
+                        const hiddenDiv = document.createElement('div');
+                        hiddenDiv.style.width = '210mm';  // A
+                        hiddenDiv.style.padding = '20px';
+                        hiddenDiv.innerHTML = htmlContent;
+                        document.body.appendChild(hiddenDiv);
+
+                        // Convert the HTML content to PDF using jsPDF
+                        const { jsPDF } = window.jspdf;
+                        const pdf = new jsPDF();
+                        pdf.html(hiddenDiv, {
+                            callback: function (pdf) {
+                                // Automatically download the generated PDF
+                                pdf.save('converted-file.pdf');
+
+                                // Generate the blob for preview
+                                const pdfBlob = pdf.output('blob');
+                                const pdfUrl = URL.createObjectURL(pdfBlob);
+                                document.getElementById('pdf-frame').src = pdf;
+                                document.getElementById('pdf-frame').src = pdfUrl;
+
+                                // Clean up hidden div
+                                document.body.removeChild(hiddenDiv);
+                            },
+                            x: 10,
+                            y: 10,
+                            width: 190, // Reduced width to fit margins
+                            windowWidth: 800, // Ensures better rendering for larger content
+                        });
+                    });
+                });
+            };
+
+            reader.readAsArrayBuffer(input.files[0]);
+        });
+    </script>
+
+</body>
+
+</html>

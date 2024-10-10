@@ -4,15 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML to PDF Editor</title>
-    
-    <!-- Include jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- Include dompurify to sanitize HTML -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.8/purify.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 
     <style>
         body {
@@ -23,19 +16,23 @@
             padding: 10px;
             font-family: Arial, sans-serif;
         }
+
         #editor {
             width: 45%;
         }
+
         #preview {
             width: 45%;
             height: 100vh;
         }
+
         textarea {
             width: 100%;
             height: 90vh;
             font-family: monospace;
             font-size: 14px;
         }
+
         iframe {
             width: 100%;
             height: 90vh;
@@ -43,53 +40,53 @@
         }
     </style>
 </head>
+
 <body>
-    <!-- HTML Editor Side -->
     <div id="editor">
         <h2>HTML Input</h2>
         <textarea id="html-input">
             <h1>Hello PDF</h1>
             <p>This is a sample HTML input that will be converted into a PDF.</p>
             <p><b>Bold text</b>, <i>italic text</i>, and <u>underlined text</u>.</p>
+            <h2>Images</h2>
+            <img src="https://images.unsplash.com/photo-1603587630352-897a5b23c218?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3NzF8MHwxfGFsbHwxfHx8fHx8fHwxNjIwOTQ5MTA4&ixlib=rb-1.2.1&q=80&w=400" alt="Nature Image" style="border: 1px solid #ccc;">
         </textarea>
         <button id="update-preview">Update PDF Preview</button>
-        <button id="download-pdf">Download PDF</button>
     </div>
 
-    <!-- PDF Preview Side -->
     <div id="preview">
         <h2>PDF Preview</h2>
         <iframe id="pdf-frame"></iframe>
     </div>
 
     <script>
-        let pdf;  // Declare globally to access the same PDF instance
+        const { jsPDF } = window.jspdf;
 
         document.getElementById('update-preview').addEventListener('click', function () {
-            const { jsPDF } = window.jspdf;
-            pdf = new jsPDF();  // Create a new jsPDF instance each time
-            const htmlContent = document.getElementById("html-input").value;  // Get HTML content from textarea
+            const htmlContent = document.getElementById("html-input").value;
 
-            pdf.html(htmlContent, {
-                callback: function (pdf) {
+            // Create a hidden div to render the HTML content
+            const hiddenDiv = document.createElement('div');
+            hiddenDiv.style.display = 'none';
+            hiddenDiv.innerHTML = htmlContent;
+            document.body.appendChild(hiddenDiv);
+
+            const pdf = new jsPDF();
+
+            // Use jsPDF's html method to render HTML content as PDF
+            pdf.html(hiddenDiv, {
+                callback: function (doc) {
+                    document.body.removeChild(hiddenDiv);
+                    
                     // Get PDF as Blob and display in iframe
-                    const pdfBlob = pdf.output('blob');
+                    const pdfBlob = doc.output('blob');
                     const pdfUrl = URL.createObjectURL(pdfBlob);
-                    document.getElementById('pdf-frame').src = pdfUrl;  // Display in iframe
+                    document.getElementById('pdf-frame').src = pdfUrl;
                 },
-                x: 10,  // Adjust x/y positioning if needed
+                x: 10,
                 y: 10,
-                width: 180  // Set PDF width (optional)
+                width: 190 // Width of the content in mm (A4 is 210mm wide)
             });
-        });
-
-        // Download PDF functionality
-        document.getElementById('download-pdf').addEventListener('click', function () {
-            if (pdf) {
-                pdf.save("generated.pdf");  // Save the currently generated PDF
-            } else {
-                alert("Please generate the PDF preview first!");
-            }
         });
     </script>
 </body>

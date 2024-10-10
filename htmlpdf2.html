@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #controls {
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+            padding-right: 20px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+        }
+
+        p, td, th {
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 0; /* Remove default margins */
+        }
+
+        h1, h2, h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid; /* Avoid breaking after headings */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; /* Add spacing below tables */
+            page-break-inside: auto; /* Avoid breaking inside tables */
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        /* Add page break styles */
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="controls">
+        <h1>DOCX to PDF Converter</h1>
+        <input type="file" id="upload" accept=".docx" />
+        <button id="convert">Convert DOCX to PDF</button>
+    </div>
+
+    <iframe id="pdf-frame"></iframe> <!-- For PDF preview -->
+
+    <script>
+        document.getElementById('convert').addEventListener('click', function () {
+            const input = document.getElementById('upload');
+            const reader = new FileReader();
+            const {jsPDF} = window.jspdf
+            reader.onload = function (event) {
+                const arrayBuffer = event.target.result;
+
+                // Convert DOCX to HTML using Mammoth.js
+                mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+                    .then(function (result) {
+                        const htmlContent = result.value;
+                        console.log("Converted HTML: ", htmlContent);
+
+                        // Create a hidden div to render the HTML content
+                        const hiddenDiv = document.createElement('div');
+                        hiddenDiv.style.width = '210mm';  // A4 page width
+                        hiddenDiv.style.padding = '20px';
+                        hiddenDiv.innerHTML = htmlContent;
+                        document.body.appendChild(hiddenDiv);
+
+                        // Add controlled page breaks
+                        hiddenDiv.querySelectorAll('h1, h2, h3, table').forEach((el) => {
+                            el.classList.add('page-break'); // Force a page break before headings and tables
+                        });
+
+                        // Convert the HTML content to PDF directly using jsPDF
+                        const pdf = new jsPDF('p', 'mm', 'a4');
+
+                        pdf.html(hiddenDiv, {
+                            callback: function (pdf) {
+                                // Automatically download the generated PDF
+                                pdf.save('converted-file.pdf');
+
+                                // Generate the blob for preview
+                                const pdfBlob = pdf.output('blob');
+                                const pdfUrl = URL.createObjectURL(pdfBlob);
+                                document.getElementById('pdf-frame').src = pdfUrl;
+
+                                // Clean up hidden div
+                                document.body.removeChild(hiddenDiv);
+                            },
+                            x: 10,
+                            y: 10,
+                            width: 190, // Reduced width to fit margins
+                            windowWidth: 800, // Ensures better rendering for larger content
+                        });
+                    })
+                    .catch(function (err) {
+                        console.error("Error converting DOCX to HTML: ", err);
+                        alert("Error converting file: " + err.message);
+                    });
+            };
+
+            if (input.files.length > 0) {
+                reader.readAsArrayBuffer(input.files[0]);
+            } else {
+                alert("Please upload a DOCX file.");
+            }
+        });
+    </script>
+
+</body>
+</html>
